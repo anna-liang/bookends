@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@untitledui/icons": "^0.0.21",
+    "axios": "^1.13.4",
     "next": "16.0.8",
     "react": "19.2.1",
     "react-aria-components": "^1.14.0",
