@@ -6,9 +6,15 @@ export const googleAuth = passport.authenticate('google', {
 });
 
 export const googleCallback = passport.authenticate('google', {
-  successRedirect: `${process.env.DEV_CLIENT_URI}/dashboard`,
+  successRedirect: `${process.env.DEV_CLIENT_URI}/`,
   failureRedirect: '/auth/failure',
 });
+
+export const getUser = (req: Request, res: Response) => {
+  return res.json({
+    user: req.user,
+  });
+};
 
 export const logout = (req: Request, res: Response, next: NextFunction) => {
   req.logout((err) => {
@@ -17,5 +23,6 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
     req.session.destroy(() => {
       res.redirect(`${process.env.DEV_CLIENT_URI}`);
     });
+    res.setHeader('Set-Cookie', 'connect.sid=; Max-Age=0; Path=/; HttpOnly');
   });
 };

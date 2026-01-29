@@ -2,6 +2,7 @@ import express from 'express';
 import {
   googleAuth,
   googleCallback,
+  getUser,
   logout,
 } from '../controllers/auth.controllers.ts';
 import { isUserLoggedIn } from '../../middleware/auth.middleware.ts';
@@ -19,6 +20,8 @@ router.get('/failure', (req, res) => {
 });
 
 router.get('/google/callback', googleCallback);
+
+router.get('/me', getUser);
 
 router.get('/logout', logout);
 

@@ -12,7 +12,14 @@ const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET is not defined');
 }
-app.use(session({ secret: sessionSecret }));
+app.use(
+  session({
+    secret: sessionSecret,
+    cookie: {
+      httpOnly: true,
+    },
+  }),
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(
