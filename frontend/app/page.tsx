@@ -1,4 +1,4 @@
-import { getUser } from './api/authService';
+import { getUser } from '../api/authService';
 import DashboardView from './DashboardView';
 
 export default async function Home() {

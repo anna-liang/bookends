@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { getUser } from './api/authService';
-import { SocialButton } from '@/app/components/base/buttons/social-button';
+import { getUser } from '../api/authService';
+import { SocialButton } from '@/components/base/buttons/social-button';
+import SearchBar from './search/searchBar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,12 +35,13 @@ export default async function RootLayout({
         {user ? (
           children
         ) : (
-          <div className="flex min-h-screen items-center justify-center">
+          <div className="flex min-h-screen items-center justify-center flex-col">
             <a href={`${process.env.NEXT_PUBLIC_DEV_API_URL}/auth/google`}>
               <SocialButton social="google" theme="brand">
                 Sign in with Google
               </SocialButton>
             </a>
+            <SearchBar />
           </div>
         )}
       </body>
