@@ -11,7 +11,7 @@ export const fetchBooksFromGoogle = async (query: string) => {
   }
 };
 
-export const fetchBookById = async (id: string) => {
+export const fetchOneBookById = async (id: string) => {
   try {
     const response = await axios.get(
       `${process.env.GOOGLE_BOOKS_API_URI}/v1/volumes/${id}?key=${process.env.GOOGLE_BOOKS_DEV_API_KEY}`,

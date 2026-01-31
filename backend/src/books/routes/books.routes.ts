@@ -1,12 +1,9 @@
 import express from 'express';
-import {
-  searchBooks,
-  searchBookById,
-} from '../controllers/books.controllers.ts';
+import { getBooks, getBookById } from '../controllers/books.controllers.ts';
 
 const router = express.Router();
 
-router.get('/search', searchBooks);
-router.get('/searchById', searchBookById);
+router.get('/', getBooks);
+router.get('/:id', getBookById);
 
 export default router;
