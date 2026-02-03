@@ -9,7 +9,7 @@ export const getBooks = async (req: Request, res: Response) => {
 
   try {
     const results = await booksService.fetchBooksFromGoogle(query);
-    return res.json({ items: results.items });
+    return res.json({ items: results.items || [] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to search books' });
@@ -17,7 +17,7 @@ export const getBooks = async (req: Request, res: Response) => {
 };
 
 export const getBookById = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   if (!id) {
     return res.status(400).json({ error: 'Missing query parameter "id"' });
   }
