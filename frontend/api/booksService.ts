@@ -8,7 +8,7 @@ export const getBooks = async (query: string): Promise<Book[]> => {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_DEV_API_URL}/books?q=${encodeURIComponent(query)}`,
     );
-    const mappedBooks = res.data.items.map((volume: GoogleVolume) =>
+    const mappedBooks = res.data.map((volume: GoogleVolume) =>
       mapGoogleVolumeToBook(volume),
     );
     return mappedBooks;

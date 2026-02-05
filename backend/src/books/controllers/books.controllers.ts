@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { fetchBooksFromGoogle, fetchBookById} from '../services/books.services.ts';
+import { fetchBooksFromGoogle, fetchBookById } from '../services/books.services.ts';
 
 export const getBooks = async (req: Request, res: Response) => {
   const query = req.query.q as string;
@@ -8,8 +8,8 @@ export const getBooks = async (req: Request, res: Response) => {
   }
 
   try {
-    const results = await fetchBooksFromGoogle(query);
-    return res.json({ items: results.items || [] });
+    const results = await fetchBooksFromGoogle(query) || [];
+    return res.json(results.items);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to search books' });
