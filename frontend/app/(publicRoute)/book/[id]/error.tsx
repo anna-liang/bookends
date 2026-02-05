@@ -1,10 +1,10 @@
 'use client';
 
-interface MovieErrorProps {
+interface BookErrorProps {
   error: Error;
 }
 
-export default function MovieError({ error }: { error: MovieErrorProps }) {
+export default function BookError({ error }: { error: BookErrorProps }) {
   const message =
     error instanceof Error
       ? error.message
