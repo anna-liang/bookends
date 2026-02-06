@@ -7,13 +7,20 @@ export const ShelfPrivacy = {
 
 export type ShelfPrivacy = typeof ShelfPrivacy[keyof typeof ShelfPrivacy];
 
+export const BookStatus = {
+  READ: "read",
+  READING: "reading",
+  NOTREAD: "not_read"
+} as const;
+
+export type BookStatus = typeof BookStatus[keyof typeof BookStatus];
 
 export interface Shelf {
-    id: string,
-    name: string,
-    description?: string,
-    books: Book[],
-    owner: string,
-    privacy: ShelfPrivacy,
-    createdAt: string
+  id: string,
+  name: string,
+  description?: string,
+  books: Book[],
+  owner: string,
+  privacy: ShelfPrivacy,
+  createdAt: string
 }

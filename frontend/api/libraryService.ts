@@ -25,6 +25,27 @@ export const createShelf = async ({ name, description, privacy }: { name: string
     }
 };
 
+export const updateShelf = async ({ name, description, privacy, id }: { name: string, description?: string, privacy: ShelfPrivacy, id: string }) => {
+    try {
+        const cookieHeader = (await cookies()).toString();
+        const res = await axios.patch(
+            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${id}`, {
+            name, description, privacy
+        }, {
+            headers: {
+                cookie: cookieHeader,
+            },
+            withCredentials: true
+        }
+        );
+        console.log('updated shelf', res.data)
+        return res.data
+
+    } catch (err) {
+        throw err
+    }
+};
+
 export const getShelves = async () => {
     try {
         const cookieHeader = (await cookies()).toString();
@@ -55,6 +76,26 @@ export const getShelf = async ({ id }: { id: string }) => {
             withCredentials: true
         }
         );
+        return res.data
+
+    } catch (err) {
+        throw err
+    }
+};
+
+export const addBookToShelf = async ({ shelfId, bookId }: { shelfId: string, bookId: string }) => {
+    try {
+        console.log(shelfId, bookId)
+        const cookieHeader = (await cookies()).toString();
+        const res = await axios.post(
+            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${shelfId}/books/${bookId}`, {}, {
+            headers: {
+                cookie: cookieHeader,
+            },
+            withCredentials: true
+        }
+        );
+        console.log(res.data)
         return res.data
 
     } catch (err) {

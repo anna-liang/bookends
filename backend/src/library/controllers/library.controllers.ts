@@ -15,13 +15,28 @@ export const createShelf = async (req: Request, res: Response) => {
 
     try {
         await libraryService.createShelf({ name, description, owner: req.user.id, privacy });
+        return res.sendStatus(200)
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
 };
 
 export const updateShelf = async (req: Request, res: Response) => {
+    const { name, description, privacy } = req.body;
+    const shelfId = req.params.shelfId as string
+    if (!req.user) {
+        return res.status(401).json({ error: 'Unauthorized Access' });
+    }
+    if (!shelfId) {
+        return res.status(400).json({ error: 'Missing parameter "shelfId"' });
+    }
 
+    try {
+        await libraryService.updateShelf({ name, description, privacy, shelfId });
+        return res.sendStatus(200)
+    } catch (err: any) {
+        return res.status(err.status || 500).json({ error: err.message });
+    }
 };
 
 export const getShelves = async (req: Request, res: Response) => {
@@ -58,7 +73,24 @@ export const deleteShelf = async (req: Request, res: Response) => {
 };
 
 export const addBookToShelf = async (req: Request, res: Response) => {
-
+    const shelfId = req.params.shelfId as string
+    const bookId = req.params.bookId as string
+    console.log(req.user)
+    if (!req.user) {
+        return res.status(401).json({ error: 'Unauthorized Access' });
+    }
+    if (!shelfId) {
+        return res.status(400).json({ error: 'Missing parameter "shelfId"' });
+    }
+    if (!bookId) {
+        return res.status(400).json({ error: 'Missing parameter "bookId"' });
+    }
+    try {
+        await libraryService.addBookToShelf({ shelfId, bookId, owner: req.user.id });
+        return res.sendStatus(200)
+    } catch (err: any) {
+        return res.status(err.status || 500).json({ error: err.message });
+    }
 };
 
 export const deleteBookFromShelf = async (req: Request, res: Response) => {

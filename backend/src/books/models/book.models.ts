@@ -11,5 +11,7 @@ export interface Book {
   averageRating: number;
   ratingsCount: number;
   image?: string;
+  language: string;
   previewLink: string;
+  infoLink: string;
 }
