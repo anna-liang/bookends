@@ -1,5 +1,4 @@
 "use client"
-import { addBookToShelf } from "@/api/libraryService";
 import { ShelfPrivacy } from "@/types/library";
 import { useState } from "react";
 import { useShelves } from "@/app/queries/useShelves";
@@ -7,6 +6,7 @@ import { useShelf } from "@/app/queries/useShelf";
 import { useCreateShelf } from "@/app/queries/useCreateShelf";
 import { useUpdateShelf } from "@/app/queries/useUpdateShelf";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAddBookToShelf } from "@/app/queries/useAddBookToShelf";
 
 export default function Page() {
   const queryClient = useQueryClient()
@@ -17,6 +17,7 @@ export default function Page() {
   const getShelves = useShelves()
   const createShelf = useCreateShelf()
   const updateShelf = useUpdateShelf()
+  const addBookToShelf = useAddBookToShelf()
   const [shelfId, setShelfId] = useState('')
   const { data } = useShelf({ id: shelfId || undefined })
 
@@ -80,8 +81,8 @@ export default function Page() {
     }
   }
 
-  const handleSaveBook = async () => {
-    await addBookToShelf({ shelfId: '3eac5ad2-c2de-4348-8231-398f273e7f33', bookId: 'nZk0AgAAQBAJ' })
+  const handleSaveBook = () => {
+    addBookToShelf.mutate({ shelfId: 'aaa96763-e8c5-4d03-aef1-83590ca0590e', bookId: 'nZk0AgAAQBAJ' })
   }
 
   const printQueryKeys = () => {
