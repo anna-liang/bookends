@@ -1,6 +1,17 @@
 import type { GoogleVolume } from "../../books/models/books.dto.ts";
 import type { Book } from "../../books/models/book.models.ts";
 
+const splitCategories = (categories: string[]): string[] => {
+    let splitCategories: string[] = []
+    if (categories && categories.length !== 0) {
+        categories.map((category) => {
+            splitCategories = splitCategories.concat(category.split('/').map((item) => item.trim()))
+        })
+    }
+    const uniqueCategories = [...new Set(splitCategories)]
+    return uniqueCategories
+}
+
 export function mapGoogleVolumeToBook(volume: GoogleVolume): Book {
     const book: Book = {
         id: volume.id,
@@ -11,13 +22,15 @@ export function mapGoogleVolumeToBook(volume: GoogleVolume): Book {
         description: volume.volumeInfo.description,
         pageCount: volume.volumeInfo.pageCount,
         mainCategory: volume.volumeInfo.mainCategory,
-        categories: volume.volumeInfo.categories,
+        categories: splitCategories(volume.volumeInfo.categories),
         averageRating: volume.volumeInfo.averageRating,
         ratingsCount: volume.volumeInfo.averageRating,
         image: volume.volumeInfo.imageLinks
             ? volume.volumeInfo.imageLinks.thumbnail
             : '',
         previewLink: volume.volumeInfo.previewLink,
+        language: volume.volumeInfo.language,
+        infoLink: volume.volumeInfo.infoLink
     };
     return book;
 }
