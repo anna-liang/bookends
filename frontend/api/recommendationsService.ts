@@ -49,7 +49,6 @@ export const getRecommendationsForShelf = async ({ shelfId }: { shelfId: string 
             withCredentials: true
         }
         );
-        console.log('returned recommendations', res.data)
         return res.data
 
     } catch (err) {

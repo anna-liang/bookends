@@ -13,7 +13,6 @@ export default function SearchBar() {
     try {
       const books = await getBooks(query);
       setBooks(books);
-      console.log(books);
     } catch (err) {
       console.error(err);
     }

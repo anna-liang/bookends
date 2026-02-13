@@ -82,7 +82,6 @@ export const getShelf = async ({ id }: { id: string }) => {
 
 export const addBookToShelf = async ({ shelfId, bookId }: { shelfId: string, bookId: string }) => {
     try {
-        console.log(shelfId, bookId)
         const cookieHeader = (await cookies()).toString();
         const res = await axios.post(
             `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${shelfId}/books/${bookId}`, {}, {
@@ -92,7 +91,6 @@ export const addBookToShelf = async ({ shelfId, bookId }: { shelfId: string, boo
             withCredentials: true
         }
         );
-        console.log(res.data)
         return res.data
 
     } catch (err) {

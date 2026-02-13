@@ -40,7 +40,6 @@ export const updateShelf = async (req: Request, res: Response) => {
 };
 
 export const getShelves = async (req: Request, res: Response) => {
-    console.log('GET /shelves')
     if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized Access' });
     }
@@ -55,7 +54,6 @@ export const getShelves = async (req: Request, res: Response) => {
 
 export const getShelf = async (req: Request, res: Response) => {
     const shelfId = req.params.shelfId as string
-    console.log(`GET /shelves/${shelfId}`)
     if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized Access' });
     }
@@ -77,7 +75,6 @@ export const deleteShelf = async (req: Request, res: Response) => {
 export const addBookToShelf = async (req: Request, res: Response) => {
     const shelfId = req.params.shelfId as string
     const bookId = req.params.bookId as string
-    console.log(req.user)
     if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized Access' });
     }

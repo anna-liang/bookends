@@ -40,7 +40,6 @@ export const updateShelf = async ({ name, description, privacy, shelfId }: { nam
         `,
       [name, description, privacy, shelfId]
     )
-    console.log(result.rows)
     if (result.rows.length === 0) {
       throw new HttpError("Unexpected error updating shelf", 500)
     }
@@ -114,12 +113,12 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
     const bookResult = await fetchBookById(bookId)
     if (bookResult) bookToAdd = bookResult
   } catch (err) {
-    console.log('fetch book err')
+    console.log('Error fetching book:', err)
     throw err
   }
   // insert in book
   try {
-    const bookTableResult = await pool.query<GoogleVolume>(`
+    await pool.query<GoogleVolume>(`
         INSERT INTO "book" (id, title, authors, publisher, published_date, description, page_count, main_category, categories, average_rating, ratings_count, thumbnail, language, preview_link, info_link)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         ON CONFLICT (id) DO NOTHING
@@ -128,12 +127,11 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
       [bookToAdd.id, bookToAdd.title, bookToAdd.authors, bookToAdd.publisher, bookToAdd.publishedDate, bookToAdd.description, bookToAdd.pageCount, bookToAdd.mainCategory, bookToAdd.categories, bookToAdd.averageRating, bookToAdd.ratingsCount, bookToAdd.image, bookToAdd.language, bookToAdd.previewLink, bookToAdd.infoLink] // TODO: write a helper function
     )
   } catch (err) {
-    console.log(err)
+    console.log('book table insert error', err)
     throw err
   }
   // insert in user_book
   try {
-    // TODO: create type for return object
     const insertUserBookTableResult = await pool.query<UserBookRow>(`
         INSERT INTO "user_book" (id, status, user_id, book_id)
         VALUES ($1, $2, $3, $4)
@@ -158,13 +156,12 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
       userBookId = selectUserBookTableResult.rows[0].id
     }
   } catch (err) {
-    console.log(err)
+    console.log('user_book table insert error', err)
     throw err
   }
   // insert in shelf_book
   try {
-    // TODO: create type for return object
-    const shelfBookTableResult = await pool.query<ShelfBookRow>(`
+    await pool.query<ShelfBookRow>(`
         INSERT INTO "shelf_book" (id, shelf_id, user_book_id, added_at)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (shelf_id, user_book_id) DO NOTHING
@@ -173,7 +170,7 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
       [uuidv4(), shelfId, userBookId, dayjs(new Date())]
     )
   } catch (err) {
-    console.log(err)
+    console.log('shelf_book table insert error', err)
     throw err
   }
   return
@@ -206,7 +203,6 @@ export const updateBook = async ({ owner, bookId, status, rating, readAt }: { ow
         `,
       [status, rating, readAtDate, owner, bookId]
     )
-    console.log(result.rows)
     if (result.rows.length === 0) {
       throw new HttpError("Unexpected error updating shelf", 500)
     }
