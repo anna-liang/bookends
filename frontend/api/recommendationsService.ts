@@ -21,11 +21,11 @@ export const getRecommendationsForUser = async () => {
     }
 };
 
-export const getRecommendationsForBook = async () => {
+export const getRecommendationsForBook = async ({ bookId }: { bookId: string }) => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/recommendations/book`, {
+            `${process.env.NEXT_PUBLIC_DEV_API_URL}/recommendations/book/${bookId}`, {
             headers: {
                 cookie: cookieHeader,
             },

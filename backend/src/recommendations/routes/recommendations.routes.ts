@@ -7,7 +7,7 @@ import { isUserLoggedIn } from '../../middleware/auth.middleware.ts';
 const router = express.Router();
 
 router.get('/user', isUserLoggedIn, getRecommendationsForUser);
-router.get('/book', isUserLoggedIn, getRecommendationsForBook);
-router.get('/shelf', isUserLoggedIn, getRecommendationsForShelf);
+router.get('/book/:bookId', isUserLoggedIn, getRecommendationsForBook);
+router.get('/shelf/:shelfId', isUserLoggedIn, getRecommendationsForShelf);
 
 export default router;
