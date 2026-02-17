@@ -17,9 +17,9 @@ router.patch('/:shelfId', isUserLoggedIn, updateShelf);
  */
 router.post('/:shelfId/books/:bookId', isUserLoggedIn, addBookToShelf);
 /**
- * Deletes a book from library
+ * Deletes a book from shelf
  */
-router.delete('/:shelfId/books/:bookId', isUserLoggedIn, deleteBookFromShelf);
+router.delete('/:shelfId/books/:userBookId', isUserLoggedIn, deleteBookFromShelf);
 /**
  * Gets all shelves for a user
  */

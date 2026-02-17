@@ -117,3 +117,21 @@ export const updateBook = async ({ bookId, status, rating, readAt }: { bookId: s
         throw err
     }
 };
+
+export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId: string, shelfId: string }) => {
+    try {
+        const cookieHeader = (await cookies()).toString();
+        const res = await axios.delete(
+            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${shelfId}/books/${userBookId}`, {
+            headers: {
+                cookie: cookieHeader,
+            },
+            withCredentials: true
+        }
+        );
+        return res.data
+
+    } catch (err) {
+        throw err
+    }
+};

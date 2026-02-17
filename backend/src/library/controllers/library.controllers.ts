@@ -93,7 +93,20 @@ export const addBookToShelf = async (req: Request, res: Response) => {
 };
 
 export const deleteBookFromShelf = async (req: Request, res: Response) => {
-
+    const userBookId = req.params.userBookId as string
+    const shelfId = req.params.shelfId as string
+    if (!req.user) {
+        return res.status(401).json({ error: 'Unauthorized Access' });
+    }
+    if (!userBookId) {
+        return res.status(400).json({ error: 'Missing parameter "userBookId"' });
+    }
+    try {
+        await libraryService.deleteBookFromShelf({ userBookId, shelfId });
+        return res.sendStatus(200)
+    } catch (err: any) {
+        return res.status(err.status || 500).json({ error: err.message });
+    }
 };
 
 export const updateBook = async (req: Request, res: Response) => {

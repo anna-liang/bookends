@@ -176,16 +176,23 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
   return
 };
 
-export const deleteBookFromShelf = async ({ bookId, shelfId }: { bookId: string, shelfId: string }) => {
-  // await pool.query(`
-  //       UPDATE "shelf"
-  //       SET books = array_remove(books, $1)
-  //       WHERE id = $2
-  //       RETURNING *;
-  //       `,
-  //     [bookId, shelfId]
-  // );
-
+export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId: string, shelfId: string }) => {
+  try {
+    const result = await pool.query<Shelf>(`
+          DELETE FROM "shelf_book"
+          WHERE user_book_id = $1 AND shelf_id = $2
+          RETURNING *;
+        `,
+      [userBookId, shelfId]
+    )
+    if (result.rowCount === 0) {
+      throw new HttpError("Unexpected error deleting book from shelf", 500)
+    }
+    return result.rowCount
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };
 
 export const updateBook = async ({ owner, bookId, status, rating, readAt }: { owner: string, bookId: string, status?: BookStatus, rating?: number | undefined, readAt?: string }) => {
