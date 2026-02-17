@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '../styles/theme.css';
+@import "@heroui/styles"; 
 
 @plugin "tailwindcss-animate";
 @plugin "tailwindcss-react-aria-components";
@@ -60,8 +61,8 @@ input[type='search']::-webkit-search-cancel-button {
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --background: #ffffff;
+  --foreground: #171717; */
 }
 
 @theme inline {
@@ -73,7 +74,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #ccae88;
     --foreground: #ededed;
   }
 }
