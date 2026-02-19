@@ -1,9 +1,9 @@
 import { Book } from '@/types/books';
 import BookListItem from '../listItem/bookListItem';
 
-export default function BookList({ books }: { books: Book[] }) {
+export default function BookList({ books, style }: { books: Book[], style?: string }) {
   return (
-    <ul>
+    <ul className={style}>
       {books.map((book, index) => {
         return (
           <li key={book.id}>

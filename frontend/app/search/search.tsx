@@ -19,7 +19,6 @@ export default function Search() {
             e.preventDefault();
             try {
                 const books = await getBooks(query);
-                console.log(books)
                 setBooks(books);
             } catch (err) {
                 console.error(err);
@@ -29,8 +28,8 @@ export default function Search() {
 
     return (
         <div className='flex flex-col items-center'>
-            <SearchBar handleSearch={handleSearch} handleOnChange={handleOnChange} query={query} />
-            <BookList books={books} />
+            <SearchBar handleSearch={handleSearch} handleOnChange={handleOnChange} query={query} style="h-30 w-80" />
+            <BookList books={books} style="w-2xl" />
         </div>
     );
 }

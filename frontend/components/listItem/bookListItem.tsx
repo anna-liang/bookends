@@ -1,20 +1,15 @@
 import { Book } from '@/types/books';
-import Image from 'next/image';
 import Link from 'next/link';
 import { formatAuthors } from '@/utils/helpers';
 import dayjs from 'dayjs';
 import { RatingStars } from "@/components/foundations/rating-stars";
-import { BookClosed } from '@untitledui/icons';
+import { BookThumbnail } from '../image/bookThumbnail';
 
 export default function BookListItem({ book }: { book: Book }) {
   return (
     <div className='flex flex-row mb-4'>
-      <Link key={book.id} href={`/book/${book.id}`} className='rounded-r-lg overflow-hidden'>
-        {book.image ? (
-          <Image src={book.image} alt={book.title} width={90} height={100} />
-        ) : <div className='flex w-22 h-29 justify-center items-center border-2 border-gray-400 rounded-r-lg overflow-hidden'>
-          <BookClosed className='size-10 text-gray-400' strokeWidth={1} />
-        </div>
+      <Link key={book.id} href={`/book/${book.id}`}>
+        {<BookThumbnail src={book.image} width={90} height={100} alt={book.title} thumbnailStyle='w-22 h-29' noThumbnailStyle='size-10' />
         }
       </Link>
       <div className='flex flex-col ml-2'>
