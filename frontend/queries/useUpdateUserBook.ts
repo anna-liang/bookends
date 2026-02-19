@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { updateBook } from '@/api/libraryService'
+import { updateUserBook } from '@/api/libraryService'
 import { shelvesKey } from './shelvesKey'
 import { BookStatus } from '@/types/library'
 
-export const useUpdateBook = () => {
+export const useUpdateUserBook = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
@@ -17,7 +17,7 @@ export const useUpdateBook = () => {
             status?: BookStatus,
             rating?: number,
             readAt?: string,
-        }) => updateBook({ bookId, status, rating, readAt }),
+        }) => updateUserBook({ bookId, status, rating, readAt }),
         onSuccess: (_) => {
             queryClient.invalidateQueries({
                 queryKey: shelvesKey.lists(),
