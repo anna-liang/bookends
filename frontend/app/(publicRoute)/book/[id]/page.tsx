@@ -1,7 +1,8 @@
 import { getBookById } from '@/api/booksService';
 import { formatAuthors } from '@/utils/helpers';
-import Image from 'next/image';
 import SaveBookButton from './saveBookButton';
+import { BookThumbnail } from '@/components/image/bookThumbnail';
+import Description from './desctiption';
 
 interface BookPageProps {
   params: Promise<{ id: string }>;
@@ -11,15 +12,20 @@ export default async function BookPage({ params }: BookPageProps) {
   const { id } = await params;
   const book = await getBookById(id);
 
+  // TODO: hide save button behind auth
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      {book.title}
-      <span>{formatAuthors(book.authors)}</span>
-      {book.image && (
-        <Image src={book.image} alt={book.title} width={100} height={100} />
-      )}
-      <div>{book.description}</div>
-      <SaveBookButton bookId={id} />
+    <div className='flex justify-center mt-8'>
+      <div className='flex flex-col'>
+        <BookThumbnail src={book.image} width={200} height={250} alt={book.title} />
+        <SaveBookButton bookId={id} />
+      </div>
+      <div className='flex-col max-w-3/5 justify-center ml-8'>
+        <p className='text-5xl font-bold'>{book.title}</p>
+        <span className='text-xl'>{formatAuthors(book.authors)}</span>
+        <p>{book.description}</p>
+        {/* <Description description={book.description} /> */}
+      </div>
     </div>
   );
 }

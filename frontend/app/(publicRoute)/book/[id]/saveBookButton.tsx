@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { BookmarkAdd, BookmarkCheck } from '@untitledui/icons';
 import { Button } from '@/components/base/buttons/button';
+import { useAddBookToShelf } from '@/queries/useAddBookToShelf';
 
 export default function SaveBookButton({ bookId }: { bookId: string }) {
-  const [saved, setSaved] = useState(false);
+  const addBookToShelf = useAddBookToShelf()
+  const [saved, setSaved] = useState(false); // TODO: load in save state from db
 
   const handleSave = async () => {
-    // save to shelf
+    addBookToShelf.mutate({ shelfId: '16e28255-2c2f-4e7f-9c6f-50ee0306c5db', bookId: bookId })
     setSaved((prev) => !prev);
   };
   return (
