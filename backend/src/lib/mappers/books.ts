@@ -24,7 +24,7 @@ export function mapGoogleVolumeToBook(volume: GoogleVolume): Book {
         mainCategory: volume.volumeInfo.mainCategory,
         categories: splitCategories(volume.volumeInfo.categories),
         averageRating: volume.volumeInfo.averageRating,
-        ratingsCount: volume.volumeInfo.averageRating,
+        ratingsCount: volume.volumeInfo.ratingsCount,
         image: volume.volumeInfo.imageLinks
             ? volume.volumeInfo.imageLinks.thumbnail
             : '',
