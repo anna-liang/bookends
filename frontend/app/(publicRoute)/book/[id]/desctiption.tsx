@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react';
 
-export default async function Description({ description }: { description: string }) {
+export default function Description({ description }: { description: string }) {
     const [showDescription, setShowDescription] = useState(false)
 
     const renderDescription = () => {
