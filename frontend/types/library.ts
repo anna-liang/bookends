@@ -12,3 +12,12 @@ export const BookStatus = {
 } as const;
 
 export type BookStatus = typeof BookStatus[keyof typeof BookStatus];
+
+export interface Shelf {
+  id: string,
+  name: string,
+  description?: string,
+  owner: string,
+  privacy: ShelfPrivacy
+  createdAt: string
+}
