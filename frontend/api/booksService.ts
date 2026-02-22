@@ -12,7 +12,7 @@ export const getBooks = async (query: string): Promise<Book[]> => {
   }
 };
 
-export const getBookById = async (id: string): Promise<Book> => {
+export const getBookById = async ({ id }: { id: string }): Promise<Book> => {
   try {
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_DEV_API_URL}/books/${id}`,
