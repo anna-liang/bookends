@@ -71,8 +71,11 @@ export const getShelves = async ({ owner }: { owner: string }) => {
 export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: string }) => {
   try {
     const result = await pool.query<Shelf>(`
-        SELECT * FROM "shelf"
-        WHERE id = $1 AND owner = $2
+        SELECT b.title, b.authors, b.thumbnail, ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
+        JOIN shelf_book sb ON s.id = sb.shelf_id
+        JOIN user_book ub ON ub.id = sb.user_book_id
+        JOIN book b ON ub.book_id = b.id
+        WHERE s.id = $1 AND s.owner = $2
         `,
       [shelfId, owner]
     )
