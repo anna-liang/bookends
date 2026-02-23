@@ -5,8 +5,8 @@ import dayjs, { type Dayjs } from 'dayjs';
 import { HttpError } from '../../utils/HttpError.ts';
 import { fetchBookById } from '../../books/services/books.services.ts';
 import type { Book } from '../../books/models/book.models.ts';
-import type { GoogleVolume } from '../../books/models/books.dto.ts';
 import type { UserBookRow, ShelfBookRow } from '../models/library.db.types.ts';
+import { mapDbShelfToShelf, mapDbShelfBookToShelfBook } from '../../lib/mappers/library.ts';
 
 export const createShelf = async ({ name, description, owner, privacy }: { name: string, description?: string, owner: string, privacy: ShelfPrivacy }) => {
   try {
@@ -69,9 +69,25 @@ export const getShelves = async ({ owner }: { owner: string }) => {
 };
 
 export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: string }) => {
+  let shelf;
   try {
-    const result = await pool.query<Shelf>(`
-        SELECT b.title, b.authors, b.thumbnail, ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
+    const shelfResult = await pool.query(`
+        SELECT * FROM "shelf"
+        WHERE id = $1 AND owner = $2
+        `,
+      [shelfId, owner]
+    )
+    if (shelfResult.rows !== undefined && shelfResult.rows.length === 0) {
+      throw new HttpError("Shelf not found.", 404)
+    }
+    shelf = mapDbShelfToShelf(shelfResult.rows[0])
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+  try {
+    const shelfBooksRresult = await pool.query(`
+        SELECT b.id, b.title, b.authors, b.thumbnail, ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
         JOIN shelf_book sb ON s.id = sb.shelf_id
         JOIN user_book ub ON ub.id = sb.user_book_id
         JOIN book b ON ub.book_id = b.id
@@ -79,10 +95,11 @@ export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: str
         `,
       [shelfId, owner]
     )
-    if (result.rows.length === 0) {
+    if (shelfBooksRresult.rows !== undefined && shelfBooksRresult.rows.length === 0) {
       throw new HttpError("Shelf not found.", 404)
     }
-    return result.rows
+    shelf.books = shelfBooksRresult.rows.map((shelfBook) => mapDbShelfBookToShelfBook(shelfBook))
+    return shelf
   } catch (err) {
     console.error(err);
     throw err;

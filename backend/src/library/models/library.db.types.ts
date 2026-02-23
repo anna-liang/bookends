@@ -1,4 +1,14 @@
 import type { BookStatus } from "./library.models.ts"
+import { ShelfPrivacy } from "./library.models.ts"
+
+export interface ShelfRow {
+    id: string,
+    name: string,
+    description?: string,
+    owner: string,
+    privacy: ShelfPrivacy,
+    created_at: string,
+}
 
 export interface ShelfBookRow {
     id: string,
