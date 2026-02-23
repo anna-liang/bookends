@@ -95,8 +95,8 @@ export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: str
         `,
       [shelfId, owner]
     )
-    if (shelfBooksRresult.rows !== undefined && shelfBooksRresult.rows.length === 0) {
-      throw new HttpError("Shelf not found.", 404)
+    if (shelfBooksRresult.rows === undefined) {
+      throw new HttpError("Books not found.", 404)
     }
     shelf.books = shelfBooksRresult.rows.map((shelfBook) => mapDbShelfBookToShelfBook(shelfBook))
     return shelf
