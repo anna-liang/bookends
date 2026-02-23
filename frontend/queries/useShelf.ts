@@ -8,5 +8,6 @@ export const useShelf = ({ id }: { id?: string }) => {
         queryFn: () => getShelf({ id: id! }),
         enabled: !!id,
         staleTime: 5 * 60000,
+        retry: false
     })
 }

@@ -13,11 +13,22 @@ export const BookStatus = {
 
 export type BookStatus = typeof BookStatus[keyof typeof BookStatus];
 
+export interface ShelfBook {
+  bookId: string,
+  title: string,
+  authors: string[],
+  thumbnail: string,
+  status: BookStatus,
+  userRating: number,
+  readAt: string,
+  addedAt: string
+}
+
 export interface Shelf {
   id: string,
   name: string,
-  description?: string,
-  owner: string,
-  privacy: ShelfPrivacy
+  description?: string | undefined,
+  privacy: ShelfPrivacy,
+  books: ShelfBook[]
   createdAt: string
 }
