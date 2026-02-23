@@ -4,6 +4,7 @@ import { Edit01, Trash01 } from "@untitledui/icons";
 import dayjs from "dayjs";
 import { ButtonUtility } from "@/components/base/buttons/button-utility";
 import { BookThumbnail } from "@/components/image/bookThumbnail";
+import Link from "next/link";
 
 const StatusMap = {
     [BookStatus.TO_READ]: { text: 'Want to read' },
@@ -31,9 +32,11 @@ export default function ShelfTable({ shelf }: { shelf: Shelf }) {
                     {(item) => (
                         <Table.Row id={item.bookId}>
                             <Table.Cell>
-                                <BookThumbnail src={item.thumbnail} width={50} height={50} alt={item.title} />
+                                <Link href={`/book/${item.bookId}`}>
+                                    <BookThumbnail src={item.thumbnail} width={50} height={50} alt={item.title} />
+                                </Link>
                             </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap">{item.title}</Table.Cell>
+                            <Table.Cell className="whitespace-nowrap"><Link href={`/book/${item.bookId}`} className="hover:underline">{item.title}</Link></Table.Cell>
                             <Table.Cell className="whitespace-nowrap md:hidden xl:table-cell">{item.authors}</Table.Cell>
                             <Table.Cell className="whitespace-nowrap">{item.userRating}</Table.Cell>
                             <Table.Cell className="whitespace-nowrap">{StatusMap[item.status].text}</Table.Cell>
