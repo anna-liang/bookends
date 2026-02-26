@@ -1,10 +1,11 @@
 import { BookStatus, Shelf } from "@/types/library";
 import { Table, TableCard } from "@/components/application/table/table";
-import { Edit01, Trash01 } from "@untitledui/icons";
+import { Edit01 } from "@untitledui/icons";
 import dayjs from "dayjs";
 import { ButtonUtility } from "@/components/base/buttons/button-utility";
 import { BookThumbnail } from "@/components/image/bookThumbnail";
 import Link from "next/link";
+import DeleteButton from "./deleteButton";
 
 const StatusMap = {
     [BookStatus.TO_READ]: { text: 'Want to read' },
@@ -14,6 +15,7 @@ const StatusMap = {
 
 export default function ShelfTable({ shelf }: { shelf: Shelf }) {
     if (!shelf) return null
+
     return (
         <TableCard.Root>
             <TableCard.Header title={shelf.name} description={shelf.description} />
@@ -45,7 +47,7 @@ export default function ShelfTable({ shelf }: { shelf: Shelf }) {
                             <Table.Cell className="px-4">
                                 <div className="flex justify-end gap-0.5">
                                     <ButtonUtility size="xs" color="tertiary" tooltip="Edit" icon={Edit01} />
-                                    <ButtonUtility size="xs" color="tertiary" tooltip="Delete" icon={Trash01} />
+                                    <DeleteButton shelfId={shelf.id} userBookId={item.userBookId} />
                                 </div>
                             </Table.Cell>
                         </Table.Row>

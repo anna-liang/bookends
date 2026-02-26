@@ -18,6 +18,7 @@ export interface ShelfBook {
   title: string,
   authors: string[],
   thumbnail: string,
+  userBookId: string,
   status: BookStatus,
   userRating: number,
   readAt: string,

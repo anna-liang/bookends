@@ -87,7 +87,7 @@ export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: str
   }
   try {
     const shelfBooksRresult = await pool.query(`
-        SELECT b.id, b.title, b.authors, b.thumbnail, ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
+        SELECT b.id as "book_id", b.title, b.authors, b.thumbnail, ub.id as "user_book_id", ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
         JOIN shelf_book sb ON s.id = sb.shelf_id
         JOIN user_book ub ON ub.id = sb.user_book_id
         JOIN book b ON ub.book_id = b.id

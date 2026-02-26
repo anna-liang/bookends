@@ -3,10 +3,11 @@ import type { ShelfRow } from "../../library/models/library.db.types.ts"
 
 export function mapDbShelfBookToShelfBook(shelfBookRow: any): ShelfBook {
     const shelfBook = {
-        bookId: shelfBookRow.id,
+        bookId: shelfBookRow.book_id,
         title: shelfBookRow.title,
         authors: shelfBookRow.authors,
         thumbnail: shelfBookRow.thumbnail,
+        userBookId: shelfBookRow.user_book_id,
         status: shelfBookRow.status,
         userRating: shelfBookRow.user_rating,
         readAt: shelfBookRow.read_at,

@@ -101,6 +101,9 @@ export const deleteBookFromShelf = async (req: Request, res: Response) => {
     if (!userBookId) {
         return res.status(400).json({ error: 'Missing parameter "userBookId"' });
     }
+    if (!shelfId) {
+        return res.status(400).json({ error: 'Missing parameter "shelfId"' });
+    }
     try {
         await libraryService.deleteBookFromShelf({ userBookId, shelfId });
         return res.sendStatus(200)
