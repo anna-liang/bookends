@@ -113,20 +113,20 @@ export const deleteBookFromShelf = async (req: Request, res: Response) => {
 };
 
 export const updateUserBook = async (req: Request, res: Response) => {
-    const bookId = req.params.bookId as string
+    const userBookId = req.params.userBookId as string
     const { status, rating, readAt } = req.body;
     let parsedRating: undefined | number = undefined
     if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized Access' });
     }
-    if (!bookId) {
+    if (!userBookId) {
         return res.status(400).json({ error: 'Missing parameter "bookId"' });
     }
     if (rating !== undefined && rating !== null && rating !== '') {
         parsedRating = parseInt(rating)
     }
     try {
-        await libraryService.updateUserBook({ bookId, owner: req.user.id, status, rating: parsedRating, readAt });
+        await libraryService.updateUserBook({ userBookId, owner: req.user.id, status, rating: parsedRating, readAt });
         return res.sendStatus(200)
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });

@@ -35,7 +35,7 @@ router.delete('/:shelfId', isUserLoggedIn, deleteShelf);
 /**
  * Updates a book
  */
-router.patch('/books/:bookId', isUserLoggedIn, updateUserBook)
+router.patch('/books/:userBookId', isUserLoggedIn, updateUserBook)
 /**
  * Get a user book
  */

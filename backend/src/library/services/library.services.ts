@@ -201,7 +201,7 @@ export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId:
   }
 };
 
-export const updateUserBook = async ({ owner, bookId, status, rating, readAt }: { owner: string, bookId: string, status?: BookStatus, rating?: number | undefined, readAt?: string }) => {
+export const updateUserBook = async ({ owner, userBookId, status, rating, readAt }: { owner: string, userBookId: string, status?: BookStatus, rating?: number | undefined, readAt?: string }) => {
   try {
     let readAtDate: Dayjs | string | undefined = readAt
     if (!readAt && status === BookStatus.READ) readAtDate = dayjs(new Date())
@@ -211,10 +211,10 @@ export const updateUserBook = async ({ owner, bookId, status, rating, readAt }: 
             status = COALESCE($1, status),
             user_rating = COALESCE($2, user_rating),
             read_at = COALESCE($3, read_at)
-          WHERE user_id = $4 AND book_id = $5
+          WHERE user_id = $4 AND id = $5
           RETURNING *;
         `,
-      [status, rating, readAtDate, owner, bookId]
+      [status, rating, readAtDate, owner, userBookId]
     )
     if (result.rows.length === 0) {
       throw new HttpError("Unexpected error updating shelf", 500)

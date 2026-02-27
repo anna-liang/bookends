@@ -98,11 +98,11 @@ export const addBookToShelf = async ({ shelfId, bookId }: { shelfId: string, boo
     }
 };
 
-export const updateUserBook = async ({ bookId, status, rating, readAt }: { bookId: string, status?: BookStatus, rating?: number, readAt?: string }) => {
+export const updateUserBook = async ({ userBookId, status, rating, readAt }: { userBookId: string, status?: BookStatus, rating?: number, readAt?: string }) => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.patch(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/books/${bookId}`, {
+            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/books/${userBookId}`, {
             status, rating, readAt
         }, {
             headers: {
