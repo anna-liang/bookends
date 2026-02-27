@@ -1,11 +1,10 @@
 import { BookStatus, Shelf } from "@/types/library";
 import { Table, TableCard } from "@/components/application/table/table";
-import { Edit01 } from "@untitledui/icons";
 import dayjs from "dayjs";
-import { ButtonUtility } from "@/components/base/buttons/button-utility";
 import { BookThumbnail } from "@/components/image/bookThumbnail";
 import Link from "next/link";
 import DeleteButton from "./deleteButton";
+import EditButton from "./editButton";
 
 const StatusMap = {
     [BookStatus.TO_READ]: { text: 'Want to read' },
@@ -46,7 +45,7 @@ export default function ShelfTable({ shelf }: { shelf: Shelf }) {
                             <Table.Cell className="whitespace-nowrap">{dayjs(item.addedAt).format('MMM D, YYYY')}</Table.Cell>
                             <Table.Cell className="px-4">
                                 <div className="flex justify-end gap-0.5">
-                                    <ButtonUtility size="xs" color="tertiary" tooltip="Edit" icon={Edit01} />
+                                    <EditButton book={item} />
                                     <DeleteButton shelfId={shelf.id} userBookId={item.userBookId} />
                                 </div>
                             </Table.Cell>
