@@ -8,16 +8,16 @@ export const useUpdateUserBook = () => {
 
     return useMutation({
         mutationFn: ({
-            bookId,
+            userBookId,
             status,
             rating,
             readAt
         }: {
-            bookId: string,
+            userBookId: string,
             status?: BookStatus,
             rating?: number,
             readAt?: string,
-        }) => updateUserBook({ bookId, status, rating, readAt }),
+        }) => updateUserBook({ userBookId, status, rating, readAt }),
         onSuccess: (_) => {
             queryClient.invalidateQueries({
                 queryKey: shelvesKey.lists(),
