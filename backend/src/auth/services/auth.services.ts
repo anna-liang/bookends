@@ -1,9 +1,15 @@
 import { pool } from '../../db.ts';
-import type { UserRow } from '../models/auth.models.ts';
+import type { IUser, UserRow } from '../models/auth.models.ts';
 import type { GoogleUserProfile } from '../models/auth.dto.ts';
 import dayjs from 'dayjs';
 
-export const findOrCreateUser = async (profile: GoogleUserProfile) => {
+/**
+ * Finds an existing user or creates a new one based on their Google profile
+ * @function findOrCreateUser
+ * @param {GoogleUserProfile} profile - The Google user profile containing user information
+ * @returns {Promise<IUser>} - A promise resolving to the found or created user
+ */
+export const findOrCreateUser = async (profile: GoogleUserProfile): Promise<IUser> => {
   try {
     const result = await pool.query<UserRow>(`
         INSERT INTO "user" (id, first_name, last_name, email, picture, created_at)
@@ -28,13 +34,13 @@ export const findOrCreateUser = async (profile: GoogleUserProfile) => {
       returnedUser = existing.rows[0]
     }
 
-    const user = {
-      id: returnedUser?.id,
-      firstName: returnedUser?.first_name,
-      lastName: returnedUser?.last_name,
-      email: returnedUser?.email,
-      picture: returnedUser?.picture,
-      createdAt: returnedUser?.created_at
+    const user: IUser = {
+      id: returnedUser?.id || '',
+      firstName: returnedUser?.first_name || '',
+      lastName: returnedUser?.last_name || '',
+      email: returnedUser?.email || '',
+      picture: returnedUser?.picture || '',
+      createdAt: returnedUser?.created_at || dayjs(new Date()).toISOString()
     }
     return user
   } catch (err) {

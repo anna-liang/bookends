@@ -5,6 +5,12 @@ import { mapGoogleVolumeToBook } from '../../lib/mappers/books.ts';
 import { pool } from '../../db.ts';
 import { getOrSetCache } from '../../utils/redisHelpers.ts';
 
+/**
+ * Fetches books from Google Books API based on a search query
+ * @function fetchBooksFromGoogle
+ * @param {string} query - The search query for books
+ * @returns {Promise<Book[]>} - A promise resolving to an array of fetched books
+ */
 export const fetchBooksFromGoogle = async (query: string): Promise<Book[]> => {
   try {
     const books = await getOrSetCache<Book[]>(`books?query=${query}`, async () => {
@@ -20,6 +26,12 @@ export const fetchBooksFromGoogle = async (query: string): Promise<Book[]> => {
   }
 };
 
+/**
+ * Fetches a book from Google Books API by its ID
+ * @function fetchBookById
+ * @param {string} id - The ID of the book to fetch
+ * @returns {Promise<Book>} - A promise resolving to the fetched book
+ */
 export const fetchBookById = async (id: string): Promise<Book> => {
   try {
     const book = await getOrSetCache<Book>(`books:${id}`, async () => {

@@ -1,5 +1,5 @@
-import type { Shelf, ShelfBook } from "../../library/models/library.models.ts"
-import type { ShelfRow } from "../../library/models/library.db.types.ts"
+import type { Shelf, ShelfBook, UserBook } from "../../library/models/library.models.ts"
+import type { ShelfRow, UserBookRow } from "../../library/models/library.db.types.ts"
 
 export function mapDbShelfBookToShelfBook(shelfBookRow: any): ShelfBook {
     const shelfBook = {
@@ -26,4 +26,16 @@ export function mapDbShelfToShelf(shelfRow: ShelfRow): Shelf {
         createdAt: shelfRow.created_at
     }
     return shelf
+}
+
+export function mapDbUserBookToUserBook(userBookRow: UserBookRow): UserBook {
+    const userBook: UserBook = {
+        id: userBookRow.id,
+        status: userBookRow.status,
+        userRating: userBookRow.user_rating ?? undefined,
+        userId: userBookRow.user_id,
+        bookId: userBookRow.book_id,
+        readAt: userBookRow.read_at ?? undefined
+    }
+    return userBook
 }

@@ -1,13 +1,20 @@
 import { pool } from '../../db.ts';
 import { v4 as uuidv4 } from 'uuid'
-import { BookStatus, ShelfPrivacy, type Shelf } from '../models/library.models.ts';
+import { BookStatus, ShelfPrivacy, type Shelf, type UserBook } from '../models/library.models.ts';
 import dayjs, { type Dayjs } from 'dayjs';
 import { HttpError } from '../../utils/HttpError.ts';
-import { fetchBookById } from '../../books/services/books.services.ts';
-import type { Book } from '../../books/models/book.models.ts';
 import type { UserBookRow, ShelfBookRow } from '../models/library.db.types.ts';
-import { mapDbShelfToShelf, mapDbShelfBookToShelfBook } from '../../lib/mappers/library.ts';
+import { mapDbShelfToShelf, mapDbShelfBookToShelfBook, mapDbUserBookToUserBook } from '../../lib/mappers/library.ts';
 
+/**
+ * Creates a new shelf for a given user
+ * @function createShelf
+ * @param {Object} params - Shelf creation parameters
+ * @param {string} params.name - The name of the shelf
+ * @param {string} [params.description] - Optional description of shelf
+ * @param {string} params.owner - The ID of the user who owns the shelf
+ * @param {ShelfPrivacy} params.privacy - The privacy status of shelf
+ */
 export const createShelf = async ({ name, description, owner, privacy }: { name: string, description?: string, owner: string, privacy: ShelfPrivacy }) => {
   try {
     const result = await pool.query<Shelf>(`
@@ -27,6 +34,15 @@ export const createShelf = async ({ name, description, owner, privacy }: { name:
   }
 };
 
+/**
+ * Updates a shelf
+ * @function updateShelf
+ * @param {Object} params - Shelf update parameters
+ * @param {string} params.name - The new name of the shelf
+ * @param {string} [params.description] - Optional new description of shelf
+ * @param {ShelfPrivacy} params.privacy - The new privacy status of shelf
+ * @param {string} params.shelfId - The ID of the shelf to update
+ */
 export const updateShelf = async ({ name, description, privacy, shelfId }: { name: string, description?: string, privacy: ShelfPrivacy, shelfId: string }) => {
   try {
     const result = await pool.query<Shelf>(`
@@ -43,14 +59,20 @@ export const updateShelf = async ({ name, description, privacy, shelfId }: { nam
     if (result.rows.length === 0) {
       throw new HttpError("Unexpected error updating shelf", 500)
     }
-    return result.rows
   } catch (err) {
     console.error(err);
     throw err;
   }
 };
 
-export const getShelves = async ({ owner }: { owner: string }) => {
+/**
+ * Gets all shelves for a given user
+ * @function getShelves
+ * @param {Object} params - Parameters for getting shelves
+ * @param {string} params.owner - The ID of the user whose shelves to retrieve
+ * @returns {Promise<Shelf[]>} - An array of shelves belonging to the specified user
+ */
+export const getShelves = async ({ owner }: { owner: string }): Promise<Shelf[]> => {
   try {
     const result = await pool.query<Shelf>(`
         SELECT * FROM "shelf"
@@ -68,7 +90,15 @@ export const getShelves = async ({ owner }: { owner: string }) => {
   }
 };
 
-export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: string }) => {
+/**
+ * Retrieves a specific shelf by its ID and owner
+ * @function getShelf
+ * @param {Object} params - Parameters for retrieving a shelf
+ * @param {string} params.shelfId - The ID of the shelf to retrieve
+ * @param {string} params.owner - The ID of the user who owns the shelf
+ * @returns {Promise<Shelf>} - The requested shelf
+ */
+export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: string }): Promise<Shelf> => {
   let shelf;
   try {
     const shelfResult = await pool.query(`
@@ -86,6 +116,7 @@ export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: str
     throw err;
   }
   try {
+    // join shelf with all books in shelf
     const shelfBooksRresult = await pool.query(`
         SELECT b.id as "book_id", b.title, b.authors, b.thumbnail, ub.id as "user_book_id", ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
         JOIN shelf_book sb ON s.id = sb.shelf_id
@@ -110,32 +141,16 @@ export const deleteShelf = async () => {
 
 };
 
+/**
+ * Adds a book to a specific shelf
+ * @function addBookToShelf
+ * @param {Object} params - Parameters for adding a book to a shelf
+ * @param {string} params.shelfId - The ID of the shelf to add the book to
+ * @param {string} params.bookId - The ID of the book to add
+ * @param {string} params.owner - The ID of the user who owns the shelf
+ */
 export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: string, bookId: string, owner: string }) => {
-  let bookToAdd: Book = {
-    id: '',
-    title: '',
-    authors: [],
-    publisher: '',
-    publishedDate: '',
-    description: '',
-    pageCount: 0,
-    mainCategory: '',
-    categories: [],
-    averageRating: 0,
-    ratingsCount: 0,
-    image: '',
-    language: '',
-    previewLink: '',
-    infoLink: ''
-  }
   let userBookId = ''
-  try {
-    const bookResult = await fetchBookById(bookId)
-    if (bookResult) bookToAdd = bookResult
-  } catch (err) {
-    console.log('Error fetching book:', err)
-    throw err
-  }
   // insert in user_book
   try {
     const insertUserBookTableResult = await pool.query<UserBookRow>(`
@@ -182,6 +197,13 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
   return
 };
 
+/**
+ * Deletes a book from a specific shelf
+ * @function deleteBookFromShelf
+ * @param params - Parameters for deleting a book from a shelf
+ * @param {string} params.userBookId - The ID of the user_book entry corresponding to the book being removed
+ * @param {string} params.shelfId - The ID of the shelf to remove the book from 
+ */
 export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId: string, shelfId: string }) => {
   try {
     const result = await pool.query<Shelf>(`
@@ -194,13 +216,22 @@ export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId:
     if (result.rowCount === 0) {
       throw new HttpError("Unexpected error deleting book from shelf", 500)
     }
-    return result.rowCount
   } catch (err) {
     console.error(err);
     throw err;
   }
 };
 
+/**
+ * Updates a user's book entry with new status, rating, or read date
+ * @function updateUserBook
+ * @param {Object} params - Parameters for updating a user's book entry
+ * @param {string} params.owner - The ID of the user who owns the book entry
+ * @param {string} params.userBookId - The ID of the user_book entry to update
+ * @param {BookStatus} [params.status] - The new status of the book (optional)
+ * @param {number} [params.rating] - The new rating of the book (optional)
+ * @param {string} [params.readAt] - The new read date of the book in ISO format (optional)
+ */
 export const updateUserBook = async ({ owner, userBookId, status, rating, readAt }: { owner: string, userBookId: string, status?: BookStatus, rating?: number | undefined, readAt?: string }) => {
   try {
     let readAtDate: Dayjs | string | undefined = readAt
@@ -219,22 +250,33 @@ export const updateUserBook = async ({ owner, userBookId, status, rating, readAt
     if (result.rows.length === 0) {
       throw new HttpError("Unexpected error updating shelf", 500)
     }
-    return result.rows
   } catch (err) {
     console.error(err);
     throw err;
   }
 };
 
-export const getUserBook = async ({ owner, bookId }: { owner: string, bookId: string }) => {
+/**
+ * Gets a user's book entry for a specific book
+ * @function getUserBook
+ * @param {Object} params - Parameters for retrieving a user's book entry
+ * @param {string} params.owner - The ID of the user who owns the book entry
+ * @param {string} params.bookId - The ID of the book to retrieve the user_book entry for
+ * @returns {Promise<UserBook[]>} - An array of user_book entries for the specified book and user
+ */
+export const getUserBook = async ({ owner, bookId }: { owner: string, bookId: string }): Promise<UserBook[]> => {
   try {
-    const result = await pool.query<Shelf>(`
+    const result = await pool.query<UserBookRow>(`
         SELECT * FROM "user_book"
         WHERE user_id = $1 AND book_id = $2
         `,
       [owner, bookId]
     )
-    return result.rows
+    if (result.rows.length === 0) {
+      throw new HttpError("User book entry not found.", 404)
+    }
+    const mappedResult = result.rows.map((userBook) => mapDbUserBookToUserBook(userBook))
+    return mappedResult
   } catch (err) {
     console.error(err);
     throw err;
