@@ -17,6 +17,10 @@ export const getUser = (req: Request, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Unauthorized Access' });
+  }
+
   req.logout((err) => {
     if (err) return next(err);
 

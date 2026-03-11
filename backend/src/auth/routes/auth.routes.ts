@@ -5,6 +5,7 @@ import {
   getUser,
   logout,
 } from '../controllers/auth.controllers.ts';
+import { isUserLoggedIn } from '../../middleware/auth.middleware.ts';
 
 const router = express.Router();
 
@@ -18,6 +19,6 @@ router.get('/google/callback', googleCallback);
 
 router.get('/me', getUser);
 
-router.get('/logout', logout);
+router.get('/logout', isUserLoggedIn, logout);
 
 export default router;
