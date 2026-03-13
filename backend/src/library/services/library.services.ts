@@ -20,7 +20,7 @@ export const createShelf = async ({ name, description, owner, privacy }: { name:
     const result = await pool.query<Shelf>(`
         INSERT INTO "shelf" (id, name, description, owner, privacy, created_at)
         VALUES ($1, $2, $3, $4, $5, $6)
-        ON CONFLICT (name) DO NOTHING
+        ON CONFLICT (name, owner) DO NOTHING
         RETURNING *;
         `,
       [uuidv4(), name, description, owner, privacy, dayjs(new Date())]
