@@ -14,8 +14,8 @@ export const createShelf = async (req: Request, res: Response) => {
     }
 
     try {
-        await libraryService.createShelf({ name, description, owner: req.user.id, privacy });
-        return res.sendStatus(200)
+        const results = await libraryService.createShelf({ name, description, owner: req.user.id, privacy });
+        return res.json(results);
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
