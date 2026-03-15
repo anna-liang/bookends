@@ -14,8 +14,9 @@ import { mapDbShelfToShelf, mapDbShelfBookToShelfBook, mapDbUserBookToUserBook }
  * @param {string} [params.description] - Optional description of shelf
  * @param {string} params.owner - The ID of the user who owns the shelf
  * @param {ShelfPrivacy} params.privacy - The privacy status of shelf
+ * @returns {Promise<Shelf>} - The created shelf
  */
-export const createShelf = async ({ name, description, owner, privacy }: { name: string, description?: string, owner: string, privacy: ShelfPrivacy }) => {
+export const createShelf = async ({ name, description, owner, privacy }: { name: string, description?: string, owner: string, privacy: ShelfPrivacy }): Promise<Shelf> => {
   try {
     const result = await pool.query<Shelf>(`
         INSERT INTO "shelf" (id, name, description, owner, privacy, created_at)
@@ -28,6 +29,12 @@ export const createShelf = async ({ name, description, owner, privacy }: { name:
     if (result.rows.length === 0) {
       throw new HttpError("A shelf with this name already exists.", 409)
     }
+    const createdShelf = result.rows[0]
+
+    if (!createdShelf) {
+      throw new HttpError("Database failed to create record.", 500)
+    }
+    return createdShelf
   } catch (err) {
     console.error(err);
     throw err;
@@ -80,9 +87,7 @@ export const getShelves = async ({ owner }: { owner: string }): Promise<Shelf[]>
         `,
       [owner]
     )
-    if (result.rows.length === 0) {
-      throw new HttpError("Shelves not found.", 404)
-    }
+
     return result.rows
   } catch (err) {
     console.error(err);
@@ -117,7 +122,7 @@ export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: str
   }
   try {
     // join shelf with all books in shelf
-    const shelfBooksRresult = await pool.query(`
+    const shelfBooksResult = await pool.query(`
         SELECT b.id as "book_id", b.title, b.authors, b.thumbnail, ub.id as "user_book_id", ub.status, ub.user_rating, ub.read_at, sb.added_at FROM shelf s 
         JOIN shelf_book sb ON s.id = sb.shelf_id
         JOIN user_book ub ON ub.id = sb.user_book_id
@@ -126,10 +131,10 @@ export const getShelf = async ({ shelfId, owner }: { shelfId: string, owner: str
         `,
       [shelfId, owner]
     )
-    if (shelfBooksRresult.rows === undefined) {
+    if (shelfBooksResult.rows === undefined) {
       throw new HttpError("Books not found.", 404)
     }
-    shelf.books = shelfBooksRresult.rows.map((shelfBook) => mapDbShelfBookToShelfBook(shelfBook))
+    shelf.books = shelfBooksResult.rows.map((shelfBook) => mapDbShelfBookToShelfBook(shelfBook))
     return shelf
   } catch (err) {
     console.error(err);
