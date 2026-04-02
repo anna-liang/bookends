@@ -153,9 +153,12 @@ export const deleteShelf = async () => {
  * @param {string} params.shelfId - The ID of the shelf to add the book to
  * @param {string} params.bookId - The ID of the book to add
  * @param {string} params.owner - The ID of the user who owns the shelf
+ * @returns {Promise<{ shelfBookId: string, userBookId: string, addedAt: string }>} - The IDs of the created shelf_book and user_book entries, and the timestamp of when the book was added to the shelf
  */
-export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: string, bookId: string, owner: string }) => {
+export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: string, bookId: string, owner: string }): Promise<{ shelfBookId: string, userBookId: string, addedAt: string }> => {
   let userBookId = ''
+  let shelfBookId = ''
+  let addedAt = ''
   // insert in user_book
   try {
     const insertUserBookTableResult = await pool.query<UserBookRow>(`
@@ -187,7 +190,7 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
   }
   // insert in shelf_book
   try {
-    await pool.query<ShelfBookRow>(`
+    const shelfBookResult = await pool.query<ShelfBookRow>(`
         INSERT INTO "shelf_book" (id, shelf_id, user_book_id, added_at)
         VALUES ($1, $2, $3, $4)
         ON CONFLICT (shelf_id, user_book_id) DO NOTHING
@@ -195,11 +198,17 @@ export const addBookToShelf = async ({ shelfId, bookId, owner }: { shelfId: stri
         `,
       [uuidv4(), shelfId, userBookId, dayjs(new Date())]
     )
+
+    if (shelfBookResult.rows[0] && shelfBookResult.rows.length !== 0) {
+      shelfBookId = shelfBookResult.rows[0].id
+      addedAt = shelfBookResult.rows[0].added_at
+    }
+    return { shelfBookId, userBookId, addedAt }
+
   } catch (err) {
     console.log('shelf_book table insert error', err)
     throw err
   }
-  return
 };
 
 /**
@@ -241,7 +250,7 @@ export const updateUserBook = async ({ owner, userBookId, status, rating, readAt
   try {
     let readAtDate: Dayjs | string | undefined = readAt
     if (!readAt && status === BookStatus.READ) readAtDate = dayjs(new Date())
-    const result = await pool.query<Shelf>(`
+    const result = await pool.query<UserBookRow>(`
           UPDATE "user_book"
           SET
             status = COALESCE($1, status),

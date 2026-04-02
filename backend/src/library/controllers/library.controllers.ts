@@ -85,8 +85,8 @@ export const addBookToShelf = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Missing parameter "bookId"' });
     }
     try {
-        await libraryService.addBookToShelf({ shelfId, bookId, owner: req.user.id });
-        return res.sendStatus(200)
+        const response = await libraryService.addBookToShelf({ shelfId, bookId, owner: req.user.id });
+        return res.json(response)
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
