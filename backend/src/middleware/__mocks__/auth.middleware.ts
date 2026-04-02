@@ -1,12 +1,12 @@
-export const isUserLoggedIn = jest.fn((req, res, next) => {
+import { jest } from '@jest/globals'
+import type { Request, NextFunction } from 'express';
+
+export const isUserLoggedIn = jest.fn((req: Request, res, next: NextFunction) => {
     req.user = {
         id: '123',
-        displayName: 'Test User',
-        name: {
-            givenName: 'Test',
-            familyName: 'User'
-        },
-        email: 'test@example.com'
+        firstName: 'User',
+        email: 'test@example.com',
+        createdAt: new Date().toISOString(),
     };
 
     return next();
