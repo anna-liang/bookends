@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": "nodemon src/server.ts",
+    "start": "npx ts-node src/server.js",
     "build": "tsc",
     "test": "jest --watchAll --detectOpenHandles"
   },
