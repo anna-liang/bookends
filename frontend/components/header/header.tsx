@@ -14,7 +14,7 @@ export const Header = async () => {
                 </Link>
                 <div className='mr-4'>
                     {user
-                        ? <ProfilePicture src={user.picture} width={50} height={50} alt='User Profile Picture' style="rounded-full" />
+                        ? <ProfilePicture src={user.picture || ''} width={50} height={50} alt='User Profile Picture' style="rounded-full" />
                         : <a href={`${process.env.NEXT_PUBLIC_DEV_API_URL}/auth/google`}>
                             <SocialButton social="google" theme="brand">
                                 Sign in with Google
