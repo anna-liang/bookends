@@ -1,0 +1,42 @@
+services:
+  frontend:
+    build:
+        context: ./frontend
+        dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./frontend/.env
+    environment:
+      NODE_ENV: development
+  backend:
+    image: devbanana/bookends:1.0
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+  db:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - ./backend/.env
+    volumes:
+      - db-data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+volumes:
+  db-data:
+    driver: local
