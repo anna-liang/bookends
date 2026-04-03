@@ -6,7 +6,7 @@ export const getRecommendationsForUser = async () => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/recommendations/user`, {
+            `${process.env.INTERNAL_DEV_API_URL}/recommendations/user`, {
             headers: {
                 cookie: cookieHeader,
             },
@@ -24,7 +24,7 @@ export const getRecommendationsForBook = async ({ bookId }: { bookId: string }) 
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/recommendations/book/${bookId}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/recommendations/book/${bookId}`, {
             headers: {
                 cookie: cookieHeader,
             },
@@ -42,7 +42,7 @@ export const getRecommendationsForShelf = async ({ shelfId }: { shelfId: string 
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/recommendations/shelf/${shelfId}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/recommendations/shelf/${shelfId}`, {
             headers: {
                 cookie: cookieHeader,
             },

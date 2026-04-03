@@ -4,7 +4,7 @@ import axios from 'axios';
 export const getBooks = async (query: string): Promise<Book[]> => {
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_DEV_API_URL}/books?q=${encodeURIComponent(query)}`,
+      `${process.env.INTERNAL_DEV_API_URL}/books?q=${encodeURIComponent(query)}`,
     );
     return res.data;
   } catch (err) {
@@ -15,7 +15,7 @@ export const getBooks = async (query: string): Promise<Book[]> => {
 export const getBookById = async ({ id }: { id: string }): Promise<Book> => {
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_DEV_API_URL}/books/${id}`,
+      `${process.env.INTERNAL_DEV_API_URL}/books/${id}`,
     );
     return res.data;
   } catch (err) {

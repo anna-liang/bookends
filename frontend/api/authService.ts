@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 export const getUser = async (): Promise<User> => {
   const cookieHeader = (await cookies()).toString();
   const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_DEV_API_URL}/auth/me`,
+    `${process.env.INTERNAL_DEV_API_URL}/auth/me`,
     {
       headers: {
         cookie: cookieHeader,

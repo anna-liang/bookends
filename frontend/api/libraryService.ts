@@ -8,7 +8,7 @@ export const createShelf = async ({ name, description, privacy }: { name: string
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves`, {
             name, description, privacy
         }, {
             headers: {
@@ -28,7 +28,7 @@ export const updateShelf = async ({ name, description, privacy, id }: { name: st
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.patch(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${id}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/${id}`, {
             name, description, privacy
         }, {
             headers: {
@@ -48,7 +48,7 @@ export const getShelves = async () => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves`, {
             headers: {
                 cookie: cookieHeader,
             },
@@ -66,7 +66,7 @@ export const getShelf = async ({ id }: { id: string }) => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${id}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/${id}`, {
             headers: {
                 cookie: cookieHeader,
             },
@@ -84,7 +84,7 @@ export const addBookToShelf = async ({ shelfId, bookId }: { shelfId: string, boo
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${shelfId}/books/${bookId}`, {}, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/${shelfId}/books/${bookId}`, {}, {
             headers: {
                 cookie: cookieHeader,
             },
@@ -102,7 +102,7 @@ export const updateUserBook = async ({ userBookId, status, rating, readAt }: { u
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.patch(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/books/${userBookId}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/books/${userBookId}`, {
             status, rating, readAt
         }, {
             headers: {
@@ -122,7 +122,7 @@ export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId:
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.delete(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/${shelfId}/books/${userBookId}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/${shelfId}/books/${userBookId}`, {
             headers: {
                 cookie: cookieHeader,
             },
@@ -140,7 +140,7 @@ export const getUserBook = async ({ bookId }: { bookId: string }) => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_DEV_API_URL}/shelves/books/${bookId}`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/books/${bookId}`, {
             headers: {
                 cookie: cookieHeader,
             },
