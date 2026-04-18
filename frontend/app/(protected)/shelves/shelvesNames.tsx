@@ -1,14 +1,13 @@
 "use client"
 
+import { useBook } from "@/queries/useBook"
 import { useShelves } from "@/queries/useShelves"
-import { User } from "@/types/user"
 import Link from "next/link"
 
-export default function ShelvesNames({ user }: { user: User }) {
+export default function ShelvesNames() {
+    useBook({ id: 'fo4rzdaHDAwC' })
     const { data, isLoading, error } = useShelves()
-    if (!user) {
-        return null
-    }
+
     if (isLoading) {
         return <div>Loading...</div>
     }

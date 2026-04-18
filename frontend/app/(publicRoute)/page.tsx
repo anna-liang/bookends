@@ -7,7 +7,7 @@ export default async function Home() {
 
     return (<div className='flex min-h-screen items-center flex-col'>
         <Search />
-        <ShelvesNames user={user} />
+        {!user ? null : <ShelvesNames />}
     </div>
     );
 }
