@@ -20,8 +20,14 @@ export const useUpdateUserBook = () => {
         }) => updateUserBook({ userBookId, status, rating, readAt }),
         onSuccess: (_) => {
             queryClient.invalidateQueries({
-                queryKey: shelvesKey.lists(),
+                queryKey: [shelvesKey.lists()],
             })
+            // queryClient.refetchQueries({ queryKey: userBookKeys.all })
+            // queryClient.invalidateQueries({
+            //     predicate: (query) =>
+            //         query.queryKey.includes('user') &&
+            //         query.state.data?.id === userBookId // userBookId exists somewhere in cached data; invalidate it
+            // });
         },
     })
 }

@@ -98,6 +98,26 @@ export const addBookToShelf = async ({ shelfId, bookId }: { shelfId: string, boo
     }
 };
 
+export const createUserBook = async ({ bookId, status }: { bookId: string, status?: BookStatus }) => {
+    try {
+        const cookieHeader = (await cookies()).toString();
+        const res = await axios.post(
+            `${process.env.INTERNAL_DEV_API_URL}/shelves/books`, {
+            bookId, status
+        }, {
+            headers: {
+                cookie: cookieHeader,
+            },
+            withCredentials: true
+        }
+        );
+        return res.data
+
+    } catch (err) {
+        throw err
+    }
+};
+
 export const updateUserBook = async ({ userBookId, status, rating, readAt }: { userBookId: string, status?: BookStatus, rating?: number, readAt?: string }) => {
     try {
         const cookieHeader = (await cookies()).toString();

@@ -13,6 +13,12 @@ export const BookStatus = {
 
 export type BookStatus = typeof BookStatus[keyof typeof BookStatus];
 
+export const BookStatusReadable = {
+  [BookStatus.READ]: "Read",
+  [BookStatus.READING]: "Reading",
+  [BookStatus.TO_READ]: "Want to read",
+} as const;
+
 export interface ShelfBook {
   bookId: string,
   title: string,
