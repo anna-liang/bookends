@@ -1,7 +1,7 @@
 "use client"
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
-export default function Description({ description }: { description: string }) {
+export const Description = memo(function Description({ description }: { description: string }) {
     const [showDescription, setShowDescription] = useState(false)
 
     const renderDescription = () => {
@@ -18,4 +18,4 @@ export default function Description({ description }: { description: string }) {
             {showDescription && <button onClick={(prev) => setShowDescription(!prev)}>SHOW {showDescription ? 'LESS' : 'MORE'}</button>}
         </div>
     );
-}
+})
