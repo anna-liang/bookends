@@ -237,6 +237,41 @@ export const deleteBookFromShelf = async ({ userBookId, shelfId }: { userBookId:
 };
 
 /**
+ * Creates a user book entry
+ * @function createUserBook
+ * @param {Object} params - Parameters for creating a user book entry
+ * @param {string} params.bookId - The ID of the book to add
+ * @param {string} params.owner - The ID of the user who owns the book entry
+ * @param {BookStatus} [params.status] - The status of the book entry (optional, defaults to "to_read")
+ * @returns {Promise<UserBookRow>} - The created user book entry
+ */
+export const createUserBook = async ({ bookId, owner, status }: { bookId: string, owner: string, status?: BookStatus }): Promise<UserBookRow> => {
+  // insert in user_book
+  try {
+    const insertUserBookTableResult = await pool.query<UserBookRow>(`
+        INSERT INTO "user_book" (id, status, user_id, book_id)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (user_id, book_id) DO NOTHING
+        RETURNING *;
+        `,
+      [uuidv4(), status || BookStatus.TO_READ, owner, bookId]
+    )
+    if (insertUserBookTableResult.rows.length === 0) {
+      throw new HttpError("A user_book for this user and book already exists.", 409)
+    }
+    const createdUserBook = insertUserBookTableResult.rows[0]
+
+    if (!createdUserBook) {
+      throw new HttpError("Database failed to create record.", 500)
+    }
+    return createdUserBook
+  } catch (err) {
+    console.log('user_book table insert error', err)
+    throw err
+  }
+};
+
+/**
  * Updates a user's book entry with new status, rating, or read date
  * @function updateUserBook
  * @param {Object} params - Parameters for updating a user's book entry
@@ -264,6 +299,7 @@ export const updateUserBook = async ({ owner, userBookId, status, rating, readAt
     if (result.rows.length === 0) {
       throw new HttpError("Unexpected error updating shelf", 500)
     }
+    console.log('updated user_book entry', result.rows[0])
   } catch (err) {
     console.error(err);
     throw err;
@@ -276,9 +312,9 @@ export const updateUserBook = async ({ owner, userBookId, status, rating, readAt
  * @param {Object} params - Parameters for retrieving a user's book entry
  * @param {string} params.owner - The ID of the user who owns the book entry
  * @param {string} params.bookId - The ID of the book to retrieve the user_book entry for
- * @returns {Promise<UserBook[]>} - An array of user_book entries for the specified book and user
+ * @returns {Promise<UserBook | undefined>} - A user_book entry for the specified book and user
  */
-export const getUserBook = async ({ owner, bookId }: { owner: string, bookId: string }): Promise<UserBook[]> => {
+export const getUserBook = async ({ owner, bookId }: { owner: string, bookId: string }): Promise<UserBook | undefined> => {
   try {
     const result = await pool.query<UserBookRow>(`
         SELECT * FROM "user_book"
@@ -286,11 +322,11 @@ export const getUserBook = async ({ owner, bookId }: { owner: string, bookId: st
         `,
       [owner, bookId]
     )
-    if (result.rows.length === 0) {
+    if (result.rows.length === 0 || result === undefined) {
       throw new HttpError("User book entry not found.", 404)
     }
     const mappedResult = result.rows.map((userBook) => mapDbUserBookToUserBook(userBook))
-    return mappedResult
+    return mappedResult[0]
   } catch (err) {
     console.error(err);
     throw err;

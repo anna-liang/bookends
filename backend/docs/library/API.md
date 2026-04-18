@@ -111,15 +111,33 @@
 
     - Auth Required: Yes
 
-    - URL Parameters: `userBookId` (string)
+    - URL Parameters: `bookId` (string)
 
     - Status Codes:
         - `200 OK` - User Book retrieved successfully.
-        - `400 Bad Request` - Missing `userBookId` in URL.
+        - `400 Bad Request` - Missing `bookId` in URL.
         - `401 Unauthorized` - User not logged in.
         - `500 Error` - Database or Service error.
 
-8. **Update Single User Book**
+8. **Creates User Book**
+
+    `POST /api/shelves/books'`
+
+    **Description:** Create a user's book data for a single book.
+
+    - Auth Required: Yes
+
+    - Body Parameters:
+        - bookId (string, **Required**): The book ID.
+        - status (BookStatus, Optional): The reading status.
+
+    - Status Codes:
+        - `200 OK` - User Book updated successfully.
+        - `400 Bad Request` - Missing `bookId` in request body.
+        - `401 Unauthorized` - User not logged in.
+        - `500 Error` - Database or Service error.
+
+9. **Update Single User Book**
 
     `PATCH /api/shelves/books/:userBookId'`
 
@@ -130,7 +148,7 @@
     - URL Parameters: `userBookId` (string)
 
     - Body Parameters:
-        - status (string, Optional): The reading status.
+        - status (BookStatus, Optional): The reading status.
         - rating (string, Optional): A users's rating.
         - readAt (string, Optional): Date read.
 

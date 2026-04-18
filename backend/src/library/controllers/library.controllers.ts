@@ -14,8 +14,8 @@ export const createShelf = async (req: Request, res: Response) => {
     }
 
     try {
-        const results = await libraryService.createShelf({ name, description, owner: req.user.id, privacy });
-        return res.json(results);
+        const response = await libraryService.createShelf({ name, description, owner: req.user.id, privacy });
+        return res.json(response);
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
@@ -44,8 +44,8 @@ export const getShelves = async (req: Request, res: Response) => {
         return res.status(401).json({ error: 'Unauthorized Access' });
     }
     try {
-        const results = await libraryService.getShelves({ owner: req.user.id }) || [];
-        return res.json(results);
+        const response = await libraryService.getShelves({ owner: req.user.id }) || [];
+        return res.json(response);
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
@@ -61,8 +61,8 @@ export const getShelf = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Missing parameter "shelfId"' });
     }
     try {
-        const results = await libraryService.getShelf({ shelfId, owner: req.user.id }) || [];
-        return res.json(results);
+        const response = await libraryService.getShelf({ shelfId, owner: req.user.id }) || [];
+        return res.json(response);
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
@@ -112,6 +112,22 @@ export const deleteBookFromShelf = async (req: Request, res: Response) => {
     }
 };
 
+export const createUserBook = async (req: Request, res: Response) => {
+    const { bookId, status } = req.body;
+    if (!req.user) {
+        return res.status(401).json({ error: 'Unauthorized Access' });
+    }
+    if (!bookId) {
+        return res.status(400).json({ error: 'Missing parameter "bookId"' });
+    }
+    try {
+        const response = await libraryService.createUserBook({ bookId, owner: req.user.id, status });
+        return res.json(response)
+    } catch (err: any) {
+        return res.status(err.status || 500).json({ error: err.message });
+    }
+};
+
 export const updateUserBook = async (req: Request, res: Response) => {
     const userBookId = req.params.userBookId as string
     const { status, rating, readAt } = req.body;
@@ -142,8 +158,8 @@ export const getUserBook = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'Missing parameter "bookId"' });
     }
     try {
-        const results = await libraryService.getUserBook({ owner: req.user.id, bookId });
-        return res.json(results);
+        const response = await libraryService.getUserBook({ owner: req.user.id, bookId });
+        return res.json(response);
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
     }
