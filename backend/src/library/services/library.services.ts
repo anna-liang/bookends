@@ -77,10 +77,22 @@ export const updateShelf = async ({ name, description, privacy, shelfId }: { nam
  * @function getShelves
  * @param {Object} params - Parameters for getting shelves
  * @param {string} params.owner - The ID of the user whose shelves to retrieve
+ * @param {string} [params.bookId] - Optional ID of a book to filter shelves by (i.e. only return shelves that this book is in)
  * @returns {Promise<Shelf[]>} - An array of shelves belonging to the specified user
  */
-export const getShelves = async ({ owner }: { owner: string }): Promise<Shelf[]> => {
+export const getShelves = async ({ owner, bookId }: { owner: string, bookId?: string }): Promise<Shelf[]> => {
   try {
+    // If bookId is passed in, filter for shelves that contain that book
+    if (bookId !== undefined && bookId !== "undefined") {
+      const withBookResult = await pool.query<Shelf>(
+        `SELECT * FROM "shelf_book" sb
+        JOIN user_book ub ON ub.id = sb.user_book_id
+        WHERE ub.user_id = $1 AND ub.book_id = $2
+        `,
+        [owner, bookId]
+      )
+      return withBookResult.rows
+    }
     const result = await pool.query<Shelf>(`
         SELECT * FROM "shelf"
         WHERE owner = $1

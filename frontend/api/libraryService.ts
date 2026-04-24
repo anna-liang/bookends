@@ -44,11 +44,11 @@ export const updateShelf = async ({ name, description, privacy, id }: { name: st
     }
 };
 
-export const getShelves = async () => {
+export const getShelves = async ({ bookId }: { bookId?: string }) => {
     try {
         const cookieHeader = (await cookies()).toString();
         const res = await axios.get(
-            `${process.env.INTERNAL_DEV_API_URL}/shelves`, {
+            `${process.env.INTERNAL_DEV_API_URL}/shelves?bookId=${bookId}`, {
             headers: {
                 cookie: cookieHeader,
             },

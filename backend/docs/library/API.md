@@ -46,6 +46,8 @@
 
     - Auth Required: Yes
 
+    - Query Parameters: `bookId` (string, Optional)
+
     - Success Response: `Shelf[]` (Returns `[]` if no shelves exist).
 
     - Status Codes:
@@ -139,7 +141,7 @@
 
 9. **Update Single User Book**
 
-    `PATCH /api/shelves/books/:userBookId'`
+    `PATCH /api/shelves/books/:userBookId`
 
     **Description:** Updates a user's book data for a single book.
 

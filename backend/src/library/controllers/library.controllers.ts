@@ -40,11 +40,12 @@ export const updateShelf = async (req: Request, res: Response) => {
 };
 
 export const getShelves = async (req: Request, res: Response) => {
+    const bookId = req.query.bookId as string
     if (!req.user) {
         return res.status(401).json({ error: 'Unauthorized Access' });
     }
     try {
-        const response = await libraryService.getShelves({ owner: req.user.id }) || [];
+        const response = await libraryService.getShelves({ owner: req.user.id, bookId }) || [];
         return res.json(response);
     } catch (err: any) {
         return res.status(err.status || 500).json({ error: err.message });
