@@ -8,6 +8,7 @@ import { User } from '@/types/user';
 import { RatingStars } from "@/components/foundations/rating-stars";
 import { useUserBook } from '@/queries/useUserBook';
 import BookStatusModal from './bookStatusModal';
+import EditShelvesModal from './editShelvesModal';
 
 export default function BookDetails({ id, user }: { id: string, user: User }) {
     const getBook = useBook({ id });
@@ -16,7 +17,6 @@ export default function BookDetails({ id, user }: { id: string, user: User }) {
     const getBookError = getBook.error
     const getBookLoading = getBook.isLoading
     const userBook = getUserBook.data
-    console.log(userBook)
 
     if (getBookError) {
         throw getBookError
@@ -35,6 +35,10 @@ export default function BookDetails({ id, user }: { id: string, user: User }) {
                             <BookThumbnail src={book.image} width={200} height={250} alt={book.title} />
                         </div>
                         {user && <BookStatusModal key={userBook?.status} bookId={id} bookStatus={userBook?.status} userBookId={userBook?.id} />}
+                        {user && <div className='mt-2'>
+                            <EditShelvesModal bookId={id} userBookId={userBook?.id || ''} />
+                        </div>
+                        }
                         <div className='mt-4'>
                             {user && <RatingStars rating={userBook ? userBook.userRating : 0} />}
                         </div>
