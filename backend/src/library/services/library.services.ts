@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { BookStatus, ShelfPrivacy, type Shelf, type UserBook } from '../models/library.models.ts';
 import dayjs, { type Dayjs } from 'dayjs';
 import { HttpError } from '../../utils/HttpError.ts';
-import type { UserBookRow, ShelfBookRow } from '../models/library.db.types.ts';
+import type { UserBookRow, ShelfBookRow, ShelfRow } from '../models/library.db.types.ts';
 import { mapDbShelfToShelf, mapDbShelfBookToShelfBook, mapDbUserBookToUserBook } from '../../lib/mappers/library.ts';
 
 /**
@@ -84,23 +84,26 @@ export const getShelves = async ({ owner, bookId }: { owner: string, bookId?: st
   try {
     // If bookId is passed in, filter for shelves that contain that book
     if (bookId !== undefined && bookId !== "undefined") {
-      const withBookResult = await pool.query<Shelf>(
-        `SELECT * FROM "shelf_book" sb
+      const withBookResult = await pool.query<ShelfRow>(
+        `SELECT s.id, s.name, s.description, s.privacy, s.created_at FROM "shelf_book" sb
         JOIN user_book ub ON ub.id = sb.user_book_id
+        JOIN shelf s ON s.id = sb.shelf_id
         WHERE ub.user_id = $1 AND ub.book_id = $2
         `,
         [owner, bookId]
       )
-      return withBookResult.rows
+      const shelvesWithBookResult = withBookResult.rows.map((row: ShelfRow) => mapDbShelfToShelf(row))
+      return shelvesWithBookResult
     }
-    const result = await pool.query<Shelf>(`
+    const result = await pool.query<ShelfRow>(`
         SELECT * FROM "shelf"
         WHERE owner = $1
         `,
       [owner]
     )
 
-    return result.rows
+    const shelvesResult = result.rows ? result.rows.map((row: ShelfRow) => mapDbShelfToShelf(row)) : []
+    return shelvesResult
   } catch (err) {
     console.error(err);
     throw err;
