@@ -5,7 +5,7 @@ import { Shelf } from '@/types/library'
 
 export const useShelves = ({ bookId }: { bookId?: string } = {}): UseQueryResult<Shelf[], Error> => {
     return useQuery({
-        queryKey: shelvesKey.lists(),
+        queryKey: bookId ? shelvesKey.book(bookId) : shelvesKey.lists(),
         queryFn: () => getShelves({ bookId }),
         staleTime: 5 * 60000,
         retry: false
