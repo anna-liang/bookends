@@ -9,7 +9,6 @@ export default function DeleteButton({ shelfId, userBookId }: { shelfId: string,
     const deleteBook = useDeleteBookFromShelf()
 
     const handleDeleteBook = () => {
-        console.log(shelfId, userBookId)
         try {
             deleteBook.mutate({ shelfId, userBookId })
         } catch (err: unknown) {
